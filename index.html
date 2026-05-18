@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<aside class="sidebar fade-up-1">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-inner">
+      <div class="logo-icon">⚡</div>
+      <div>
+        <div class="logo-name">FitTrack Pro</div>
+        <div class="logo-sub">Your Fitness Journey</div>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <div class="nav-item active" data-label="Dashboard"><span class="nav-icon">⊞</span> Dashboard</div>
+    <div class="nav-item" data-label="Goals"><span class="nav-icon">◎</span> Goals</div>
+    <div class="nav-item" data-label="Workouts"><span class="nav-icon">〜</span> Workouts</div>
+    <div class="nav-item" data-label="Analytics"><span class="nav-icon">▦</span> Analytics</div>
+    <div class="nav-item" data-label="Profile"><span class="nav-icon">◯</span> Profile</div>
+  </nav>
+  <div class="motiv-card">
+    <div class="title">💪 Keep Going!</div>
+    <div class="sub">You're on a 12-day streak. Don't break it now!</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <div class="page-header fade-up-2">
+    <div>
+      <h1>Welcome back, ashfaksadikkawshik! 👋</h1>
+      <p class="sub">Here's your fitness summary for today</p>
+    </div>
+    <div class="user-avatar">A</div>
+  </div>
+
+  <div class="stat-grid fade-up-3">
+    <div class="stat-card">
+      <div class="stat-row"><span class="stat-label">Calories Burned</span><span class="stat-icon">🔥</span></div>
+      <div class="stat-value" data-count="2450" data-format="comma">0</div>
+      <div class="stat-sub">+320 from yesterday</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-row"><span class="stat-label">Workout Duration</span><span class="stat-icon">🕐</span></div>
+      <div class="stat-value">2h 15m</div>
+      <div class="stat-sub">45 min cardio, 90 min strength</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-row"><span class="stat-label">Active Days Streak</span><span class="stat-icon">📅</span></div>
+      <div class="stat-value" data-count="12" data-suffix=" days">0</div>
+      <div class="stat-sub">Personal best!</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-row"><span class="stat-label">Goal Progress</span><span class="stat-icon">🎯</span></div>
+      <div class="stat-value" data-count="78" data-suffix="%">0</div>
+      <div class="stat-sub">On track to hit your target</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="panel panel-lg fade-up-4">
+      <div class="panel-header">
+        <div><h2>Weekly Progress</h2><div class="sub">Your workout activity this week</div></div>
+        <span class="panel-icon blink accent">〜</span>
+      </div>
+      <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+    </div>
+    <div class="panel panel-sm fade-up-5">
+      <div class="panel-header">
+        <div><h2>Today's Goals</h2><div class="sub">Keep pushing!</div></div>
+        <span class="panel-icon">🏆</span>
+      </div>
+      <div class="goals-list" id="goalsList"></div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="panel panel-lg fade-up-6">
+      <div class="panel-header">
+        <div><h2>Workout Distribution</h2><div class="sub">This week's activities</div></div>
+        <span class="panel-icon accent">↗</span>
+      </div>
+      <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    </div>
+    <div class="panel panel-sm fade-up-7">
+      <div class="panel-header">
+        <div><h2>Recent Achievements 🏆</h2><div class="sub">You're crushing it!</div></div>
+      </div>
+      <div class="achievements-list" id="achievementsList"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const weeklyData = [
+  { day:"Mon", calories:480 }, { day:"Tue", calories:560 },
+  { day:"Wed", calories:320 }, { day:"Thu", calories:760 },
+  { day:"Fri", calories:510 }, { day:"Sat", calories:920 },
+  { day:"Sun", calories:670 },
+];
+
+const distributionData = [
+  { day:"Mon", sessions:0.75 }, { day:"Tue", sessions:1.75 },
+  { day:"Wed", sessions:0.50 }, { day:"Thu", sessions:1.75 },
+  { day:"Fri", sessions:1.25 }, { day:"Sat", sessions:3.00 },
+  { day:"Sun", sessions:1.50 },
+];
+
+const goals = [
+  { label:"Calories",     current:"2,450", target:"2,800",  pct:85, color:"#10d9a0" },
+  { label:"Steps",        current:"6,500", target:"10,000", pct:65, color:"#3b82f6" },
+  { label:"Water Intake", current:"2.7",   target:"3.0 L",  pct:90, color:"#06b6d4" },
+];
+
+const achievements = [
+  { emoji:"🏅", color:"#f59e0b", label:"7-Day Streak", desc:"Worked out for 7 days straight" },
+  { emoji:"🏃", color:"#14b8a6", label:"5K Runner",    desc:"Completed a 5K run"             },
+  { emoji:"🌅", color:"#8b5cf6", label:"Early Bird",   desc:"5 morning workouts this week"   },
+];
+
+// Sidebar nav
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+// Animated counters
+function animateCounter(el) {
+  const target = parseInt(el.dataset.count);
+  const fmt    = el.dataset.format === "comma";
+  const suffix = el.dataset.suffix || "";
+  let current  = 0;
+  const inc    = target / 40;
+  const tick   = () => {
+    current = Math.min(current + inc, target);
+    el.textContent = (fmt ? Math.round(current).toLocaleString() : Math.round(current)) + suffix;
+    if (current < target) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+document.querySelectorAll('[data-count]').forEach(animateCounter);
+
+// SVG Ring
+function createRing(pct, color) {
+  const size = 44, stroke = 5;
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("width", size);
+  svg.setAttribute("height", size);
+  svg.style.cssText = "transform:rotate(-90deg);position:absolute;inset:0";
+  const track = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  track.setAttribute("cx", size/2); track.setAttribute("cy", size/2); track.setAttribute("r", r);
+  track.setAttribute("fill","none"); track.setAttribute("stroke","#1e2a1e"); track.setAttribute("stroke-width", stroke);
+  svg.appendChild(track);
+  const fill = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  fill.setAttribute("cx", size/2); fill.setAttribute("cy", size/2); fill.setAttribute("r", r);
+  fill.setAttribute("fill","none"); fill.setAttribute("stroke", color); fill.setAttribute("stroke-width", stroke);
+  fill.setAttribute("stroke-linecap","round");
+  fill.setAttribute("stroke-dasharray", `0 ${circ}`);
+  fill.style.transition = "stroke-dasharray 1s ease";
+  svg.appendChild(fill);
+  requestAnimationFrame(() => setTimeout(() =>
+    fill.setAttribute("stroke-dasharray", `${dash} ${circ - dash}`), 100));
+  return svg;
+}
+
+// Render Goals
+const goalsList = document.getElementById("goalsList");
+goals.forEach(({ label, current, target, pct, color }) => {
+  const item = document.createElement("div");
+  item.className = "goal-item";
+  const wrap = document.createElement("div");
+  wrap.className = "ring-wrap";
+  wrap.appendChild(createRing(pct, color));
+  const lbl = document.createElement("div");
+  lbl.className = "ring-label";
+  lbl.style.color = color;
+  lbl.textContent = pct + "%";
+  wrap.appendChild(lbl);
+  const info = document.createElement("div");
+  info.innerHTML = `<div class="goal-name">${label}</div><div class="goal-value">${current} / ${target}</div>`;
+  item.appendChild(wrap);
+  item.appendChild(info);
+  goalsList.appendChild(item);
+});
+
+// Render Achievements
+const achList = document.getElementById("achievementsList");
+achievements.forEach(({ emoji, color, label, desc }) => {
+  achList.innerHTML += `
+    <div class="achievement-item">
+      <div class="ach-icon-wrap" style="background:${color}22;border:2px solid ${color}44">${emoji}</div>
+      <div><div class="ach-name">${label}</div><div class="ach-desc">${desc}</div></div>
+    </div>`;
+});
+
+// Chart.js
+Chart.defaults.color = "#4a6b4a";
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+const tooltipCfg = {
+  backgroundColor:"#1a2418", borderColor:"#10d9a0", borderWidth:1,
+  titleColor:"#10d9a0", bodyColor:"#e8f5e8", padding:10,
+  cornerRadius:10, displayColors:false,
+  titleFont:{ weight:"600", size:12 }, bodyFont:{ size:12 },
+};
+
+new Chart(document.getElementById("lineChart"), {
+  type: "line",
+  data: {
+    labels: weeklyData.map(d => d.day),
+    datasets: [{
+      label: "Calories", data: weeklyData.map(d => d.calories),
+      borderColor:"#10d9a0", borderWidth:2.5,
+      pointBackgroundColor:"#10d9a0", pointRadius:5, pointHoverRadius:7,
+      tension:0.4, fill:false,
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ display:false }, tooltip:{ ...tooltipCfg, callbacks:{ label: ctx => `${ctx.parsed.y} kcal` }}},
+    scales:{
+      x:{ grid:{ color:"#1a2a1a" }, ticks:{ color:"#4a6b4a" }, border:{ display:false }},
+      y:{ min:0, max:1000, ticks:{ color:"#4a6b4a", stepSize:250 }, grid:{ color:"#1a2a1a" }, border:{ display:false }}
+    }
+  }
+});
+
+new Chart(document.getElementById("barChart"), {
+  type: "bar",
+  data: {
+    labels: distributionData.map(d => d.day),
+    datasets: [{
+      label:"Sessions", data:distributionData.map(d => d.sessions),
+      backgroundColor:"rgba(16,217,160,.85)", hoverBackgroundColor:"#10d9a0",
+      borderRadius:{ topLeft:6, topRight:6 }, borderSkipped:false,
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false, barThickness:28,
+    plugins:{ legend:{ display:false }, tooltip:{ ...tooltipCfg, callbacks:{ label: ctx => `${ctx.parsed.y} sessions` }}},
+    scales:{
+      x:{ grid:{ display:false }, ticks:{ color:"#4a6b4a" }, border:{ display:false }},
+      y:{ min:0, max:3, ticks:{ color:"#4a6b4a", stepSize:0.75 }, grid:{ color:"#1a2a1a" }, border:{ display:false }}
+    }
+  }
+});
+</script>
+</body>
+</html>
