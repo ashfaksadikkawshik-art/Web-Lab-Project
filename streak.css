@@ -1,0 +1,136 @@
+/* --- STREAK PAGE SPECIFIC STYLES --- */
+
+.streak-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+    .streak-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.streak-panel {
+    background: #09150c;
+    border-radius: 24px;
+    padding: 2.2rem;
+    border: 1px solid #16301b;
+}
+
+.streak-panel-header {
+    margin-bottom: 24px;
+}
+
+.streak-panel-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.streak-panel-header p {
+    color: #6b9a6b;
+    font-size: 0.9rem;
+}
+
+/* Form Styles */
+.streak-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.streak-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.streak-form-group label {
+    color: #65946b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 500;
+}
+
+.streak-form-group input {
+    background: #0d2112;
+    border: 1px solid #16331c;
+    padding: 14px;
+    border-radius: 12px;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.streak-form-group input:focus {
+    border-color: #10d9a0;
+    outline: none;
+    box-shadow: 0 0 8px rgba(16, 217, 160, 0.1);
+}
+
+.streak-btn-submit {
+    background: #10d9a0;
+    color: #040a05;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-top: 10px;
+}
+
+.streak-btn-submit:hover {
+    background: #0eb887;
+}
+
+/* Info Side Card */
+.streak-info-card {
+    background: linear-gradient(135deg, #0d2112 0%, #07140a 100%);
+    border: 1px solid #16331c;
+    border-radius: 24px;
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.info-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    animation: pulse 2s infinite;
+}
+
+.streak-info-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.streak-info-card p {
+    color: #79a27d;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.streak-info-card strong {
+    color: #10d9a0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
